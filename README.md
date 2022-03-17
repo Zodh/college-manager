@@ -4,7 +4,7 @@
 
 Projeto para gerenciar cursos e matérias de uma instituição de ensino.
 
-Fluxo de trabalho: https://trello.com/b/s3bvZbEL/college-manager
+Você pode verificar o [fluxo de trabalho clicando aqui](https://trello.com/b/s3bvZbEL/college-manager).
 
 ---
 
@@ -15,3 +15,4 @@ Fluxo de trabalho: https://trello.com/b/s3bvZbEL/college-manager
 - Docker;
 - PostgreSQL
 
+--- 
