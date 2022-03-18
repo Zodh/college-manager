@@ -4,9 +4,11 @@ import io.github.zodh.api.SubjectsApi;
 import io.github.zodh.model.CreateSubjectRequest;
 import io.github.zodh.model.CreateSubjectResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequestMapping("${default.request.mapping}")
 public class SubjectsController implements SubjectsApi {
 
   @Override
