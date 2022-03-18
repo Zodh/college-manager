@@ -8,7 +8,7 @@ Você pode verificar o [fluxo de trabalho clicando aqui](https://trello.com/b/s3
 
 ---
 
-## Tecnologias principais
+## Tecnologias utilizadas no projeto
 
 - Java;
 - Framework Spring & seus amigos;
