@@ -39,4 +39,4 @@ build/
 .vscode/
 
 # General
-Sources/CollegeManager/logs/
+Sources/logs/
