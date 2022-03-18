@@ -1,0 +1,206 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: College Manager Service
+  description: A simple API to for managing courses and subjects from a college.
+
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /courses:
+    post:
+      tags:
+        - Courses
+      description: "Endpoint that allows a user to add a course."
+      summary: "Add a course."
+      operationId: createCourse
+      parameters:
+        - $ref: '#/components/parameters/user'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCourseRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/coursesCREATED'
+        400:
+          $ref: '#/components/responses/genericERROR'
+        500:
+          $ref: '#/components/responses/genericERROR'
+
+  /subjects:
+    post:
+      tags:
+        - Subjects
+      description: "Endpoint that allows a user to add a subject."
+      summary: "Add a subject."
+      operationId: createSubject
+      parameters:
+        - $ref: '#/components/parameters/user'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubjectRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/subjectsCREATED'
+        400:
+          $ref: '#/components/responses/genericERROR'
+        500:
+          $ref: '#/components/responses/genericERROR'
+
+  /ping:
+    get:
+      tags:
+        - Courses
+        - Subjects
+      description: "Endpoint that check a service health status."
+      summary: "Retrieve server status"
+      operationId: checkServerStatus
+      responses:
+        200:
+          $ref: '#/components/responses/pingOK'
+
+components:
+
+  #  ----- Schemas  ------
+
+  schemas:
+
+    CreateCourseRequest:
+      type: object
+      description: "Request body to add a course."
+      properties:
+        courseDescription:
+          type: string
+          description: "A short description for a course."
+          example: "Course that teaches the fundamentals of programming, IT Management and Governance."
+
+    CreateCourseResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          description: "Response body returned when a course is created."
+          properties:
+            courseCode:
+              type: integer
+              format: int64
+              description: "Unique identifier of a course."
+              example: 391
+
+    CreateSubjectRequest:
+      type: object
+      description: "Request body to add a subject."
+      properties:
+        subjectDescription:
+          type: string
+          description: "A short description for a subject."
+          example: "Programming logic and algorithms."
+        totalWorkload:
+          type: integer
+          description: "Total workload of a subject."
+          example: 75
+        practicalWorkload:
+          type: integer
+          description: "Total practical workload of a subject."
+          example: 40
+        theoreticalWorkload:
+          type: integer
+          description: "Total theoretical workload of a subject."
+          example: 35
+        studentQuantity:
+          type: integer
+          description: "Student quantity of a subject."
+          example: 42
+
+    CreateSubjectResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          description: "Response body returned when a subject is created."
+          properties:
+            subjectCode:
+              type: integer
+              format: int64
+              description: "Unique identifier of a subject."
+              example: 9123
+
+    BaseResponse:
+      type: object
+      description: "Class responsible for carrying all necessary attributes in all responses."
+      properties:
+        requestId:
+          type: string
+          description: "Unique identifier of a request. A secure random generated value based on header property 'user' length."
+          example: "f0804ce7-8e3d-421a-8126-e5a0bd0a865f"
+
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          description: "Response body returned when a subject is created."
+          properties:
+            errorDescription:
+              type: string
+              description: "An error description."
+              example: "Error trying to process information."
+
+    PingResponse:
+      type: object
+      description: "Success Response Value."
+      properties:
+        message:
+          type: string
+          description: "Server status."
+          example: "College Manager Server is available."
+
+  #  ----- Parameters  ------
+
+  parameters:
+    user:
+      name: user
+      in: header
+      description: "User that call an endpoint."
+      schema:
+        type: string
+        maxLength: 128
+      required: true
+
+  # ----- Responses -----
+
+  responses:
+    coursesCREATED:
+      description: "Create course response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateCourseResponse'
+
+    subjectsCREATED:
+      description: "Create subject response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateSubjectResponse'
+
+    genericERROR:
+      description: "Generical error response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    pingOK:
+      description: "Check server health status response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PingResponse'
+
+  #  ---- /Added lines  
+  
