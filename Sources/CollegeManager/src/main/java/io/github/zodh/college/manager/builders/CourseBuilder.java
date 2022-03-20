@@ -58,7 +58,7 @@ public class CourseBuilder extends AbstractBuilder {
         ((CreateCourseRequest) request).getCourseDescription()).isEmpty();
   }
 
-  private ArrayList<Subject> addCourseSyllabus(List<Long> subjectsCodes, String requestId) {
+  public ArrayList<Subject> addCourseSyllabus(List<Long> subjectsCodes, String requestId) {
     var subjects = new ArrayList<Subject>();
     subjectsCodes.forEach(code -> {
       var subject = subjectRepository.findById(code);
