@@ -8,7 +8,6 @@ import io.github.zodh.college.manager.model.repositories.SubjectRepository;
 import io.github.zodh.model.CreateCourseRequest;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
@@ -58,7 +57,7 @@ public class CourseBuilder extends AbstractBuilder {
         ((CreateCourseRequest) request).getCourseDescription()).isEmpty();
   }
 
-  private ArrayList<Subject> addCourseSyllabus(List<Long> subjectsCodes, String requestId) {
+  public ArrayList<Subject> addCourseSyllabus(List<Long> subjectsCodes, String requestId) {
     var subjects = new ArrayList<Subject>();
     subjectsCodes.forEach(code -> {
       var subject = subjectRepository.findById(code);

@@ -36,6 +36,7 @@ public class SubjectsController implements SubjectsApi {
   @Override
   public ResponseEntity<EditSubjectResponse> updateSubject(String user,
       EditSubjectRequest editSubjectRequest) {
-    return SubjectsApi.super.updateSubject(user, editSubjectRequest);
+    return new ResponseEntity<>(subjectService.updateSubject(user, editSubjectRequest),
+        HttpStatus.OK);
   }
 }

@@ -19,7 +19,7 @@ public interface CollegeMapper {
   List<CourseDTO> fromCourseEntityListToCourseDTOList(List<Course> courses);
 
   @Named("mapSubjects")
-  default List<SubjectDTO> mapSubjects(List<Subject> subjects){
+  default List<SubjectDTO> mapSubjects(List<Subject> subjects) {
     return fromSubjectEntityListToSubjectDTOList(subjects);
   }
 
