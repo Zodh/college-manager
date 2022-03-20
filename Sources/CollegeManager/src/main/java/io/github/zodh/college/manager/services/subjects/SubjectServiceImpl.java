@@ -158,7 +158,7 @@ public class SubjectServiceImpl implements SubjectService {
           updatedFields);
       subject = (Subject) checkedSubjectAndUpdatedFields.get(0);
       updatedFields = (ArrayList<String>) checkedSubjectAndUpdatedFields.get(1);
-      if (updatedFields.isEmpty()){
+      if (updatedFields.isEmpty()) {
         updatedFields = null;
       }
       subjectRepository.save(subject);
@@ -211,9 +211,12 @@ public class SubjectServiceImpl implements SubjectService {
     if (Objects.nonNull(editSubjectRequest.getPracticalWorkload())
         || Objects.nonNull(editSubjectRequest.getTheoreticalWorkload())
         || Objects.nonNull(editSubjectRequest.getTotalWorkload())) {
-      if (editSubjectRequest.getTotalWorkload()
-          != (editSubjectRequest.getPracticalWorkload()
-          + editSubjectRequest.getTheoreticalWorkload())) {
+      var totalWorkload = (Objects.isNull(editSubjectRequest.getTotalWorkload()))
+          ? subject.getTotalWorkload()
+          : editSubjectRequest.getTotalWorkload();
+      if (totalWorkload !=
+          (editSubjectRequest.getPracticalWorkload()
+              + editSubjectRequest.getTheoreticalWorkload())) {
         updatedFields.remove("<practicalWorkload>");
         updatedFields.remove("<theoreticalWorkload>");
         updatedFields.remove("<totalWorkload>");
