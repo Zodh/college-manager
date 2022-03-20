@@ -13,6 +13,7 @@ import io.github.zodh.model.CreateSubjectResponse;
 import io.github.zodh.model.EditSubjectRequest;
 import io.github.zodh.model.EditSubjectResponse;
 import io.github.zodh.model.ErrorResponse;
+import io.github.zodh.model.ListCourseResponse;
 import io.github.zodh.model.ListSubjectResponse;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
@@ -95,13 +96,16 @@ public class SubjectServiceImpl implements SubjectService {
   public ListSubjectResponse listSubjects(String user) {
     var requestId = generateRequestId(user);
     MDC.put("requestId", requestId);
+    var listSubjectResponse = new ListSubjectResponse();
+    var errorResponse = new ErrorResponse();
     try {
       generateLog("Starting list subjects flow");
       generateLog("Listing subjects");
       var subjects = subjectRepository.findAll();
-      return new ListSubjectResponse()
+      listSubjectResponse = new ListSubjectResponse()
           .requestId(requestId)
           .subjects(collegeMapper.fromSubjectEntityListToSubjectDTOList(subjects));
+      return listSubjectResponse;
     } catch (Exception exception){
       var message = String.format(
           "Error trying to list subjects | Error: %s",
@@ -112,7 +116,7 @@ public class SubjectServiceImpl implements SubjectService {
           .builder()
           .requestId(requestId)
           .message(message)
-          .errorDescription("Error trying to save subject, try again later.")
+          .errorDescription("Error trying to list subjects, try again later.")
           .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
           .build();
       errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
