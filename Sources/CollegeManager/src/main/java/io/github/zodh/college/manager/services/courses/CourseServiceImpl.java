@@ -4,12 +4,15 @@ import static io.github.zodh.college.manager.utils.RandomGenerator.generateReque
 
 import io.github.zodh.college.manager.builders.CourseBuilder;
 import io.github.zodh.college.manager.exceptions.FlowException;
+import io.github.zodh.college.manager.mappers.CollegeMapper;
 import io.github.zodh.college.manager.mappers.ErrorMapper;
 import io.github.zodh.college.manager.model.entities.Course;
 import io.github.zodh.college.manager.model.repositories.CourseRepository;
 import io.github.zodh.model.CreateCourseRequest;
 import io.github.zodh.model.CreateCourseResponse;
 import io.github.zodh.model.ErrorResponse;
+import io.github.zodh.model.ListCourseResponse;
+import io.github.zodh.model.ListSubjectResponse;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.slf4j.MDC;
@@ -30,6 +33,9 @@ public class CourseServiceImpl implements CourseService {
 
   @Autowired
   private CourseBuilder courseBuilder;
+
+  @Autowired
+  private CollegeMapper collegeMapper;
 
   @Autowired
   private ErrorMapper errorMapper;
@@ -80,6 +86,40 @@ public class CourseServiceImpl implements CourseService {
       generateLog(errorResponse.toString());
       generateLog(createCourseResponse.toString());
       MDC.clear();
+    }
+  }
+
+  @Override
+  public ListCourseResponse listCourses(String user) {
+    var requestId = generateRequestId(user);
+    MDC.put("requestId", requestId);
+    var listCourseResponse = new ListCourseResponse();
+    var errorResponse = new ErrorResponse();
+    try {
+      generateLog("Starting list courses flow");
+      generateLog("Listing courses");
+      var courses = courseRepository.findAll();
+      listCourseResponse = new ListCourseResponse()
+          .requestId(requestId)
+          .courses(collegeMapper.fromCourseEntityListToCourseDTOList(courses));
+      return listCourseResponse;
+    } catch (Exception exception){
+      var message = String.format(
+          "Error trying to list courses | Error: %s",
+          exception.getMessage()
+      );
+      log.error("{}", message);
+      var flowException = FlowException
+          .builder()
+          .requestId(requestId)
+          .message(message)
+          .errorDescription("Error trying to list courses, try again later.")
+          .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+          .build();
+      errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
+      throw flowException;
+    } finally {
+      generateLog("Finishing list courses flow");
     }
   }
 

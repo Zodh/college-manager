@@ -4,6 +4,7 @@ import io.github.zodh.college.manager.exceptions.FlowException;
 import io.github.zodh.college.manager.model.entities.Subject;
 import io.github.zodh.college.manager.model.repositories.SubjectRepository;
 import io.github.zodh.model.CreateSubjectRequest;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,8 @@ public class SubjectBuilder extends AbstractBuilder {
           createSubjectRequest.getTheoreticalWorkload(),
           createSubjectRequest.getStudentQuantity(),
           user,
-          new Date(),
-          new Date()
+          OffsetDateTime.now(),
+          OffsetDateTime.now()
       );
     }
     throw FlowException

@@ -6,6 +6,7 @@ import io.github.zodh.college.manager.model.entities.Subject;
 import io.github.zodh.college.manager.model.repositories.CourseRepository;
 import io.github.zodh.college.manager.model.repositories.SubjectRepository;
 import io.github.zodh.model.CreateCourseRequest;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,8 +38,8 @@ public class CourseBuilder extends AbstractBuilder {
           null,
           createCourseRequest.getCourseDescription(),
           user,
-          new Date(),
-          new Date(),
+          OffsetDateTime.now(),
+          OffsetDateTime.now(),
           subjects
       );
     }

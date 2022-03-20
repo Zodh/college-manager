@@ -1,5 +1,6 @@
 package io.github.zodh.college.manager.model.entities;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,8 +45,8 @@ public class Subject {
 
   @ReadOnlyProperty
   @Column(name = "creation_date")
-  private Date creationDate;
+  private OffsetDateTime creationDate;
 
   @Column(name = "last_update")
-  private Date lastDateUpdated;
+  private OffsetDateTime lastDateUpdated;
 }
