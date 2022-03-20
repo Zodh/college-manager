@@ -1,12 +1,9 @@
-package io.github.zodh.college.manager.configuration;
+package br.com.felipec.rabbitmqplugin.configuration;
 
-import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.core.Binding.DestinationType;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 
 @Configuration
 public class CollegeMessagerConfiguration {
@@ -27,7 +24,6 @@ public class CollegeMessagerConfiguration {
 
   @Bean
   Binding callerBinding() {
-    return new Binding(callerExchange().getName(), DestinationType.EXCHANGE,
-        callerExchange().getName(), CALLER_ROUTING_KEY, null);
+    return new Binding(callerExchange().getName(), DestinationType.EXCHANGE, callerExchange().getName(), CALLER_ROUTING_KEY, null);
   }
 }

@@ -1,6 +1,6 @@
 package io.github.zodh.college.manager.services.subjects;
 
-import static io.github.zodh.college.manager.configuration.CollegeMessagerConfiguration.toJson;
+import static io.github.zodh.college.manager.utils.Generics.toJson;
 import static io.github.zodh.college.manager.utils.RandomGenerator.generateRequestId;
 
 import io.github.zodh.college.manager.builders.SubjectBuilder;
