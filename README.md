@@ -14,6 +14,6 @@ Você pode verificar o [fluxo de trabalho clicando aqui](https://trello.com/b/s3
 - Spring & SpringBoot;
 - Docker;
 - PostgreSQL
-- MongoDB (Atlas Database)
+- MongoDB to do the audit with Atlas Database.
 - Swagger (OpenAPI Document)
 --- 
