@@ -52,14 +52,13 @@ public class SubjectServiceImpl implements SubjectService {
   @Autowired
   private AmqpTemplate amqpTemplate;
 
-  private ErrorResponse errorResponse;
-
   @Override
   public CreateSubjectResponse createSubject(String user,
       CreateSubjectRequest createSubjectRequest) {
     var requestId = generateRequestId(user);
     MDC.put(REQUEST_ID, requestId);
     var createSubjectResponse = new CreateSubjectResponse();
+    var errorResponse = new ErrorResponse();
     try {
       generateLog("Starting create subject flow");
       var subject = subjectRepository.save(
