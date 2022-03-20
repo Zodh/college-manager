@@ -4,6 +4,8 @@ import io.github.zodh.api.CoursesApi;
 import io.github.zodh.college.manager.services.courses.CourseService;
 import io.github.zodh.model.CreateCourseRequest;
 import io.github.zodh.model.CreateCourseResponse;
+import io.github.zodh.model.EditCourseRequest;
+import io.github.zodh.model.EditCourseResponse;
 import io.github.zodh.model.ListCourseResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +33,11 @@ public class CoursesController implements CoursesApi {
   @Override
   public ResponseEntity<ListCourseResponse> listCourses(String user) {
     return new ResponseEntity<>(courseService.listCourses(user), HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<EditCourseResponse> updateCourse(String user,
+      EditCourseRequest editCourseRequest) {
+    return new ResponseEntity<>(courseService.updateCourse(user, editCourseRequest), HttpStatus.OK);
   }
 }
