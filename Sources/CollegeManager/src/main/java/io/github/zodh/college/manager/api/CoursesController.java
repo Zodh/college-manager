@@ -4,6 +4,7 @@ import io.github.zodh.api.CoursesApi;
 import io.github.zodh.college.manager.services.courses.CourseService;
 import io.github.zodh.model.CreateCourseRequest;
 import io.github.zodh.model.CreateCourseResponse;
+import io.github.zodh.model.ListCourseResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,5 +26,10 @@ public class CoursesController implements CoursesApi {
       @Valid @RequestBody CreateCourseRequest createCourseRequest) {
     return new ResponseEntity<>(courseService.createCourse(user, createCourseRequest),
         HttpStatus.CREATED);
+  }
+
+  @Override
+  public ResponseEntity<ListCourseResponse> listCourses(String user) {
+    return new ResponseEntity<>(courseService.listCourses(user), HttpStatus.OK);
   }
 }
