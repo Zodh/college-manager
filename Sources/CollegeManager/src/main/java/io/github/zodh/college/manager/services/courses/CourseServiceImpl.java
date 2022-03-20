@@ -1,8 +1,10 @@
 package io.github.zodh.college.manager.services.courses;
 
+import static io.github.zodh.college.manager.utils.Generics.toJson;
 import static io.github.zodh.college.manager.utils.RandomGenerator.generateRequestId;
 
 import io.github.zodh.college.manager.builders.CourseBuilder;
+import io.github.zodh.college.manager.configuration.CollegeMessagerConfiguration;
 import io.github.zodh.college.manager.exceptions.FlowException;
 import io.github.zodh.college.manager.mappers.CollegeMapper;
 import io.github.zodh.college.manager.mappers.ErrorMapper;
@@ -21,6 +23,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.slf4j.MDC;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+  private static final String REQUEST_ID = "requestId";
   @Value("${log.level}")
   private String DEFAULT_LOG_LEVEL;
 
@@ -45,10 +49,13 @@ public class CourseServiceImpl implements CourseService {
   @Autowired
   private ErrorMapper errorMapper;
 
+  @Autowired
+  private AmqpTemplate amqpTemplate;
+
   @Override
   public CreateCourseResponse createCourse(String user, CreateCourseRequest createCourseRequest) {
     var requestId = generateRequestId(user);
-    MDC.put("requestId", requestId);
+    MDC.put(REQUEST_ID, requestId);
     var createCourseResponse = new CreateCourseResponse();
     var errorResponse = new ErrorResponse();
     try {
@@ -87,9 +94,12 @@ public class CourseServiceImpl implements CourseService {
       errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
       throw flowException;
     } finally {
-      generateLog("Generating audit data");
-      generateLog(errorResponse.toString());
-      generateLog(createCourseResponse.toString());
+      var response = (Objects.nonNull(errorResponse.getRequestId()))
+          ? errorResponse
+          : createCourseResponse;
+      amqpTemplate.convertAndSend(CollegeMessagerConfiguration.CALLER_PLUGIN_QUEUE,
+          toJson(response));
+      generateLog("Finishing create course flow");
       MDC.clear();
     }
   }
@@ -97,7 +107,7 @@ public class CourseServiceImpl implements CourseService {
   @Override
   public ListCourseResponse listCourses(String user) {
     var requestId = generateRequestId(user);
-    MDC.put("requestId", requestId);
+    MDC.put(REQUEST_ID, requestId);
     var listCourseResponse = new ListCourseResponse();
     var errorResponse = new ErrorResponse();
     try {
@@ -124,6 +134,11 @@ public class CourseServiceImpl implements CourseService {
       errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
       throw flowException;
     } finally {
+      var response = (Objects.nonNull(errorResponse.getRequestId()))
+          ? errorResponse
+          : listCourseResponse;
+      amqpTemplate.convertAndSend(CollegeMessagerConfiguration.CALLER_PLUGIN_QUEUE,
+          toJson(response));
       generateLog("Finishing list courses flow");
     }
   }
@@ -131,7 +146,7 @@ public class CourseServiceImpl implements CourseService {
   @Override
   public EditCourseResponse updateCourse(String user, EditCourseRequest editCourseRequest) {
     var requestId = generateRequestId(user);
-    MDC.put("requestId", requestId);
+    MDC.put(REQUEST_ID, requestId);
     var editCourseResponse = new EditCourseResponse();
     var errorResponse = new ErrorResponse();
     try {
@@ -176,6 +191,11 @@ public class CourseServiceImpl implements CourseService {
       errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
       throw flowException;
     } finally {
+      var response = (Objects.nonNull(errorResponse.getRequestId()))
+          ? errorResponse
+          : editCourseResponse;
+      amqpTemplate.convertAndSend(CollegeMessagerConfiguration.CALLER_PLUGIN_QUEUE,
+          toJson(response));
       generateLog("Finishing edit course flow");
     }
   }
