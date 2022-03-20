@@ -12,4 +12,5 @@ public interface ErrorMapper {
   @Mapping(source = "flowException.requestId", target = "requestId")
   @Mapping(source = "flowException.errorDescription", target = "errorDescription")
   ErrorResponse fromFlowExceptionToErrorResponse(FlowException flowException);
+
 }
