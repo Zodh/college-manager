@@ -8,7 +8,6 @@ import io.github.zodh.college.manager.model.repositories.SubjectRepository;
 import io.github.zodh.model.CreateCourseRequest;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;

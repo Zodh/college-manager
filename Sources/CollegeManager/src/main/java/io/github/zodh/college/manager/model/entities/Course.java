@@ -1,7 +1,6 @@
 package io.github.zodh.college.manager.model.entities;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
