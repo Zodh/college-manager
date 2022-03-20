@@ -191,8 +191,30 @@ components:
               type: array
               description: "Courses list."
               items:
-                type: object
-                description: "Course entity."
+                $ref: '#/components/schemas/CourseDTO'
+
+    CourseDTO:
+      type: object
+      description: "Retrieved values in get courses."
+      properties:
+        code:
+          type: integer
+          format: int64
+        courseDescription:
+          type: string
+        user:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastDateUpdated:
+          type: string
+          format: date-time
+        subjects:
+          type: array
+          description: "Subjects list."
+          items:
+            $ref: '#/components/schemas/SubjectDTO'
 
     EditCourseRequest:
       allOf:
@@ -299,10 +321,10 @@ components:
           type: string
         creationDate:
           type: string
-          format: date
+          format: date-time
         lastDateUpdated:
           type: string
-          format: date
+          format: date-time
 
     EditSubjectRequest:
       allOf:
