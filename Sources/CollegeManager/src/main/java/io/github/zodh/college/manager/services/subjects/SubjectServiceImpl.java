@@ -1,8 +1,10 @@
 package io.github.zodh.college.manager.services.subjects;
 
+import static io.github.zodh.college.manager.configuration.CollegeMessagerConfiguration.toJson;
 import static io.github.zodh.college.manager.utils.RandomGenerator.generateRequestId;
 
 import io.github.zodh.college.manager.builders.SubjectBuilder;
+import io.github.zodh.college.manager.configuration.CollegeMessagerConfiguration;
 import io.github.zodh.college.manager.exceptions.FlowException;
 import io.github.zodh.college.manager.mappers.CollegeMapper;
 import io.github.zodh.college.manager.mappers.ErrorMapper;
@@ -22,6 +24,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.slf4j.MDC;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -45,6 +48,9 @@ public class SubjectServiceImpl implements SubjectService {
 
   @Autowired
   private CollegeMapper collegeMapper;
+
+  @Autowired
+  private AmqpTemplate amqpTemplate;
 
   private ErrorResponse errorResponse;
 
@@ -90,6 +96,11 @@ public class SubjectServiceImpl implements SubjectService {
       errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
       throw flowException;
     } finally {
+      var response = (Objects.nonNull(errorResponse.getRequestId()))
+          ? errorResponse
+          : createSubjectResponse;
+      amqpTemplate.convertAndSend(CollegeMessagerConfiguration.CALLER_PLUGIN_QUEUE,
+          toJson(response));
       generateLog("Finishing create subject flow");
       MDC.clear();
     }
@@ -125,6 +136,11 @@ public class SubjectServiceImpl implements SubjectService {
       errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
       throw flowException;
     } finally {
+      var response = (Objects.nonNull(errorResponse.getRequestId()))
+          ? errorResponse
+          : listSubjectResponse;
+      amqpTemplate.convertAndSend(CollegeMessagerConfiguration.CALLER_PLUGIN_QUEUE,
+          toJson(response));
       generateLog("Finishing list subjects flow");
     }
   }
@@ -182,6 +198,11 @@ public class SubjectServiceImpl implements SubjectService {
       errorResponse = errorMapper.fromFlowExceptionToErrorResponse(flowException);
       throw flowException;
     } finally {
+      var response = (Objects.nonNull(errorResponse.getRequestId()))
+          ? errorResponse
+          : editSubjectResponse;
+      amqpTemplate.convertAndSend(CollegeMessagerConfiguration.CALLER_PLUGIN_QUEUE,
+          toJson(response));
       generateLog("Finishing edit subject flow");
     }
   }
