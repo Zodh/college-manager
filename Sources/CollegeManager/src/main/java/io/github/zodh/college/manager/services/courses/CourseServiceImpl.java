@@ -197,7 +197,7 @@ public class CourseServiceImpl implements CourseService {
       throw FlowException
           .builder()
           .requestId(requestId)
-          .message("Course code not found for code " + courseCode)
+          .message("Course not found for code " + courseCode)
           .errorDescription(String.format("A course with code %s does not exists.", courseCode))
           .httpStatus(HttpStatus.NOT_FOUND)
           .build();
