@@ -12,7 +12,7 @@
 	<artifactId>RabbitMQPlugin</artifactId>
 	<version>1.0.0</version>
 	<name>RabbitMQPlugin</name>
-	<description>Projeto que atende a chamada RPC com RabbitMQ</description>
+	<description>Project that audit college manager service endpoints</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
