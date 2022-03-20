@@ -3,6 +3,10 @@ info:
   version: 1.0.0
   title: College Manager Service
   description: A simple API to for managing courses and subjects from a college.
+  contact:
+    name: "Felipe Santos"
+    email: "felipe.carvalho.bs.contato@gmail.com"
+    url: https://github.com/Zodh/
 
 servers:
   - url: http://localhost:8080/api/v1
@@ -31,6 +35,44 @@ paths:
         500:
           $ref: '#/components/responses/genericERROR'
 
+    get:
+      tags:
+        - Courses
+      description: "Endpoint that retrieve a course list to an user."
+      summary: "List courses."
+      operationId: listCourses
+      parameters:
+        - $ref: '#/components/parameters/user'
+      responses:
+        200:
+          $ref: '#/components/responses/coursesREADED'
+        400:
+          $ref: '#/components/responses/genericERROR'
+        500:
+          $ref: '#/components/responses/genericERROR'
+
+    put:
+      tags:
+        - Courses
+      description: "Endpoint that allows a user to update a course."
+      summary: "Update a course."
+      operationId: updateCourse
+      parameters:
+        - $ref: '#/components/parameters/user'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditCourseRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/coursesUPDATED'
+        400:
+          $ref: '#/components/responses/genericERROR'
+        500:
+          $ref: '#/components/responses/genericERROR'
+
   /subjects:
     post:
       tags:
@@ -54,11 +96,48 @@ paths:
         500:
           $ref: '#/components/responses/genericERROR'
 
+    get:
+      tags:
+        - Subjects
+      description: "Endpoint that retrieve a subject list to an user."
+      summary: "List subjects."
+      operationId: listSubjects
+      parameters:
+        - $ref: '#/components/parameters/user'
+      responses:
+        200:
+          $ref: '#/components/responses/subjectsREADED'
+        400:
+          $ref: '#/components/responses/genericERROR'
+        500:
+          $ref: '#/components/responses/genericERROR'
+
+    put:
+      tags:
+        - Subjects
+      description: "Endpoint that allows a user to update a subject."
+      summary: "Update a subject."
+      operationId: updateSubject
+      parameters:
+        - $ref: '#/components/parameters/user'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditSubjectRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/subjectsUPDATED'
+        400:
+          $ref: '#/components/responses/genericERROR'
+        500:
+          $ref: '#/components/responses/genericERROR'
+
   /ping:
     get:
       tags:
-        - Courses
-        - Subjects
+        - General
       description: "Endpoint that check a service health status."
       summary: "Retrieve server status"
       operationId: checkServerStatus
@@ -79,7 +158,16 @@ components:
         courseDescription:
           type: string
           description: "A short description for a course."
+          maxLength: 255
           example: "Course that teaches the fundamentals of programming, IT Management and Governance."
+        syllabus:
+          type: array
+          description: "An outline of the subjects in a course of study or teaching"
+          items:
+            type: integer
+            format: int64
+            description: "Subjects code."
+            example: 103
 
     CreateCourseResponse:
       allOf:
@@ -93,6 +181,45 @@ components:
               description: "Unique identifier of a course."
               example: 391
 
+    ListCourseResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          description: "A object that carry a courses list."
+          properties:
+            courses:
+              type: array
+              description: "Courses list."
+              items:
+                type: object
+                description: "Course entity."
+
+    EditCourseRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateCourseRequest'
+        - type: object
+        - required:
+            - courseCode
+          description: "Edit course request body."
+          properties:
+            courseCode:
+              type: integer
+              format: int64
+              description: "Unique identifier of a course."
+              example: 391
+
+    EditCourseResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          description: "Response body returned when a course is updated."
+          properties:
+            updatedFields:
+              type: array
+              items:
+                type: string
+              description: "List of updated fields."
+
     CreateSubjectRequest:
       type: object
       description: "Request body to add a subject."
@@ -104,18 +231,27 @@ components:
         totalWorkload:
           type: integer
           description: "Total workload of a subject."
+          minimum: 40
+          maximum: 180
           example: 75
         practicalWorkload:
           type: integer
           description: "Total practical workload of a subject."
+          minimum: 20
+          maximum: 160
           example: 40
         theoreticalWorkload:
           type: integer
           description: "Total theoretical workload of a subject."
+          minimum: 20
+          maximum: 160
           example: 35
         studentQuantity:
           type: integer
+          format: int64
           description: "Student quantity of a subject."
+          minimum: 15
+          maximum: 105
           example: 42
 
     CreateSubjectResponse:
@@ -129,6 +265,70 @@ components:
               format: int64
               description: "Unique identifier of a subject."
               example: 9123
+
+    ListSubjectResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          description: "A object that carry a subjects list."
+          properties:
+            subjects:
+              type: array
+              description: "Subjects list."
+              items:
+                $ref: '#/components/schemas/SubjectDTO'
+
+    SubjectDTO:
+      type: object
+      description: "Retrieved values in get subjects."
+      properties:
+        code:
+          type: integer
+          format: int64
+        subjectDescription:
+          type: string
+        totalWorkload:
+          type: integer
+        practicalWorkload:
+          type: integer
+        theoreticalWorkload:
+          type: integer
+        studentQuantity:
+          type: integer
+        user:
+          type: string
+        creationDate:
+          type: string
+          format: date
+        lastDateUpdated:
+          type: string
+          format: date
+
+    EditSubjectRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateSubjectRequest'
+        - type: object
+        - required:
+            - subjectCode
+          description: "Edit Subject request body."
+          properties:
+            subjectCode:
+              type: integer
+              format: int64
+              description: "Unique identifier of a subject."
+              example: 391
+
+    EditSubjectResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          description: "Response body returned when a subject is updated."
+          properties:
+            updatedFields:
+              type: array
+              items:
+                type: string
+              description: "List of updated fields."
 
     BaseResponse:
       type: object
@@ -149,6 +349,11 @@ components:
               type: string
               description: "An error description."
               example: "Error trying to process information."
+            errors:
+              type: array
+              items:
+                type: string
+              description: "Field and error description"
 
     PingResponse:
       type: object
@@ -168,12 +373,12 @@ components:
       description: "User that call an endpoint."
       schema:
         type: string
-        maxLength: 128
       required: true
 
   # ----- Responses -----
 
   responses:
+
     coursesCREATED:
       description: "Create course response."
       content:
@@ -181,12 +386,40 @@ components:
           schema:
             $ref: '#/components/schemas/CreateCourseResponse'
 
+    coursesREADED:
+      description: "Get all courses response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListCourseResponse'
+
+    coursesUPDATED:
+      description: "Update course response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EditCourseResponse'
+
     subjectsCREATED:
       description: "Create subject response."
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/CreateSubjectResponse'
+
+    subjectsREADED:
+      description: "Get all subjects response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListSubjectResponse'
+
+    subjectsUPDATED:
+      description: "Update subject response."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EditSubjectResponse'
 
     genericERROR:
       description: "Generical error response."
