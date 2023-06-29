@@ -5,4 +5,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MessageRepository extends MongoRepository<CollegeAuditMessage, Long> { }
+public interface MessageRepository extends MongoRepository<CollegeAuditMessage, Long> {
+
+  CollegeAuditMessage findById(String value);
+
+}
